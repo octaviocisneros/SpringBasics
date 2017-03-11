@@ -1,6 +1,7 @@
 package com.theironyard.novauc;
 
 import spark.ModelAndView;
+import spark.Session;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 import java.util.ArrayList;
@@ -19,11 +20,15 @@ public class Main {
 
         Spark.get("/", ((request, response) -> {
 
+//            Session session = request.session();
+//            String name = session.attribute("createUser");
+//            User user = mess.get(name);
 
             if (user == null) {
                 return new ModelAndView(m, "index.html"); //might need to create a login.html
             } else {
                 m.put("name", user.name);
+                m.put("name", user.password);
                 return new ModelAndView(m, "messages.html");
             }
         }), new MustacheTemplateEngine());
@@ -31,10 +36,9 @@ public class Main {
 
         Spark.post("/createUser", ((request, response) -> {
                     String name = request.queryParams("createUser");
-                    user = new User(name);
-
+                    String password = request.queryParams("password");
+                    user = new User(name, password);
                     response.redirect("/");
-
                     return "";
 
                 })
